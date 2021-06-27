@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 
 const Create = () => {
 	const [title, setTitle] = useState("");
 	const [body, setBody] = useState("");
 	const router = useRouter();
-	const handleSubmit = (e) => {
+	const handleSubmit = (e: any) => {
 		e.preventDefault();
 		fetch("/api/create", {
 			method: "POST",
@@ -16,8 +16,15 @@ const Create = () => {
 				title,
 				body,
 			}),
-		});
-		router.push("/");
+		})
+			.then((res) => res.json())
+			.then((result) => {
+				// console.log(result);
+				setTitle("");
+				setBody("");
+				router.push("/");
+			})
+			.catch((err) => console.log(err));
 	};
 	return (
 		<>

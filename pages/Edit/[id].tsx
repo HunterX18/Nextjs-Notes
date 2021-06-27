@@ -1,14 +1,20 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import connect from "../../components/db";
-import note from "../../components/models";
+const note = require("../../components/models/notes");
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 
-const Edit = ({ Otitle, Obody }) => {
+interface IPageProps {
+	Otitle: string;
+	Obody: string;
+}
+
+const Edit = ({ Otitle, Obody }: IPageProps) => {
 	const [title, setTitle] = useState(Otitle);
 	const [body, setBody] = useState(Obody);
 	const router = useRouter();
 	const { id } = router.query;
-	const handleSubmit = (e) => {
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		fetch(`/api/edit/${id}`, {
 			method: "PUT",
@@ -26,13 +32,6 @@ const Edit = ({ Otitle, Obody }) => {
 			.catch((err) => {
 				console.log(err);
 			});
-	};
-	const handleDelete = () => {
-		fetch(`/api/edit/${id}`, {
-			method: "DELETE",
-		})
-			.then((res) => router.push("/"))
-			.catch((err) => console.log(err));
 	};
 	return (
 		<>
@@ -52,15 +51,17 @@ const Edit = ({ Otitle, Obody }) => {
 				/>
 				<input type="submit" value="submit" />
 			</form>
-			<button onClick={handleDelete}>DELETE</button>
 		</>
 	);
 };
 
-export const getServerSideProps = async (req, res) => {
+export const getServerSideProps: GetServerSideProps = async (
+	ctx: GetServerSidePropsContext
+) => {
 	connect();
-	const { id } = req.params;
+	const id = ctx.params?.id;
 	const Note = await note.findById(id);
+	console.log(Note);
 	return {
 		props: {
 			Otitle: Note.title,

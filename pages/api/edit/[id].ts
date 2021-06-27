@@ -1,9 +1,11 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import connect from "../../../components/db";
-import note from "../../../components/models";
+const note = require("../../../components/models/notes");
+
 
 connect();
 
-const edit = async (req, res) => {
+const edit = async (req: NextApiRequest, res: NextApiResponse) => {
 	const { title, body } = req.body;
 	const id = req.query.id;
 	let newNote;
@@ -16,7 +18,7 @@ const edit = async (req, res) => {
 	} else {
 		newNote = await note.findByIdAndDelete(id);
 	}
-	res.json(newNote);
+	return res.json(newNote);
 };
 
 export default edit;
