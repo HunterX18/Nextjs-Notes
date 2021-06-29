@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 const Create = () => {
 	const [title, setTitle] = useState("");
 	const [body, setBody] = useState("");
+	const [status, setStatus] = useState("");
 	const router = useRouter();
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
@@ -15,6 +16,7 @@ const Create = () => {
 			body: JSON.stringify({
 				title,
 				body,
+				status
 			}),
 		})
 			.then((res) => res.json())
@@ -22,6 +24,7 @@ const Create = () => {
 				// console.log(result);
 				setTitle("");
 				setBody("");
+				setStatus("");
 				router.push("/");
 			})
 			.catch((err) => console.log(err));
@@ -41,6 +44,12 @@ const Create = () => {
 					value={body}
 					onChange={(e) => setBody(e.target.value)}
 					placeholder="description"
+				/>
+				<input
+					type="text"
+					value={status}
+					onChange={(e) => setStatus(e.target.value)}
+					placeholder="status"
 				/>
 				<input type="submit" value="submit" />
 			</form>
