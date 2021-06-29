@@ -7,11 +7,13 @@ import { GetServerSideProps, GetServerSidePropsContext } from "next";
 interface IPageProps {
 	Otitle: string;
 	Obody: string;
+	Ostatus: string;
 }
 
-const Edit = ({ Otitle, Obody }: IPageProps) => {
+const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 	const [title, setTitle] = useState(Otitle);
 	const [body, setBody] = useState(Obody);
+	const [status, setStatus] = useState(Ostatus);
 	const router = useRouter();
 	const { id } = router.query;
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,6 +26,7 @@ const Edit = ({ Otitle, Obody }: IPageProps) => {
 			body: JSON.stringify({
 				title,
 				body,
+				status,
 			}),
 		})
 			.then((res) => {
@@ -49,6 +52,12 @@ const Edit = ({ Otitle, Obody }: IPageProps) => {
 					onChange={(e) => setBody(e.target.value)}
 					placeholder="description"
 				/>
+				<input
+					type="text"
+					value={status}
+					onChange={(e) => setStatus(e.target.value)}
+					placeholder="status"
+				/>
 				<input type="submit" value="submit" />
 			</form>
 		</>
@@ -66,6 +75,7 @@ export const getServerSideProps: GetServerSideProps = async (
 		props: {
 			Otitle: Note.title,
 			Obody: Note.body,
+			Ostatus: Note.status,
 		},
 	};
 };

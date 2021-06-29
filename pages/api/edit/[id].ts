@@ -12,7 +12,7 @@ const edit = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (req.method == "PUT") {
 		newNote = await note.findByIdAndUpdate(
 			{ _id: id },
-			{ title, body },
+			{ title, body, status },
 			{ new: true }
 		);
 	} else {
