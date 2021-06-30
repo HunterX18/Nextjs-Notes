@@ -32,52 +32,45 @@ export default function Home({ notes, UI, NUI, UNI, NUNI }: IPageProps) {
 	};
 	return (
 		<div className="container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center">
-			<h1>What-To-Do</h1>
 			<Create />
-			<div className="container-xl ">
+			<div className="container-l ">
 				<div className="row">
 					<Link href="/Notes/1">
 						<div className="col m-2 border border-primary p-5 shadow-lg">
-							<h1>Urgent and Important</h1>
-							<h4>{UI} tasks pending</h4>
+							<h4 className="text-danger">Urgent and Important</h4>
+							<a href="#" className="pe-auto text-decoration-none text-info">
+								<h5>{UI} tasks pending</h5>
+							</a>
 						</div>
 					</Link>
 					<Link href="/Notes/2">
 						<div className="col m-2 border border-primary p-5 shadow-lg">
-							<h1>Urgent but NOT Important</h1>
-							<h4>{UNI} tasks pending</h4>
+							<h4 className="text-warning">Urgent but NOT Important</h4>
+							<a href="#" className="pe-auto text-decoration-none text-info">
+								<h5>{UNI} tasks pending</h5>
+							</a>
 						</div>
 					</Link>
 				</div>
 				<div className="row">
-					<Link href="/Notes/2">
+					<Link href="/Notes/3">
 						<div className="col m-2 border border-primary p-5 shadow-lg">
-							<h1>Important but NOT Urgent</h1>
-							<h4>{NUI} tasks pending</h4>
+							<h4 className="text-primary">Important but NOT Urgent</h4>
+							<a href="#" className="pe-auto text-decoration-none text-info">
+								<h5>{NUI} tasks pending</h5>
+							</a>
 						</div>
 					</Link>
-					<Link href="/Notes/2">
+					<Link href="/Notes/4">
 						<div className="col m-2 border border-primary p-5 shadow-lg">
-							<h1>Neither Important Nor Urgent</h1>
-							<h4>{NUNI} tasks pending</h4>
+							<h4 className="text-success">Neither Important Nor Urgent</h4>
+							<a href="#" className="pe-auto text-decoration-none text-info">
+								<h5>{NUNI} tasks pending</h5>
+							</a>
 						</div>
 					</Link>
 				</div>
 			</div>
-			{/* {notes.map((note, ind) => (
-				<div key={ind}>
-					<h2>
-						{ind + 1}. {note.title}
-					</h2>
-					<h3>{note.body}</h3>
-					<Link href={`/Edit/${note._id}`}>
-						<a>
-							<h3>Edit</h3>
-						</a>
-					</Link>
-					<button onClick={() => handleDelete(note._id)}>Delete</button>
-				</div>
-			))} */}
 		</div>
 	);
 }
