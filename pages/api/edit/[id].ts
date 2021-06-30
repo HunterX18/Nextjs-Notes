@@ -2,11 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import connect from "../../../components/db";
 const note = require("../../../components/models/notes");
 
-
 connect();
 
 const edit = async (req: NextApiRequest, res: NextApiResponse) => {
-	const { title, body } = req.body;
+	const { title, body, status } = req.body;
 	const id = req.query.id;
 	let newNote;
 	if (req.method == "PUT") {
@@ -16,7 +15,8 @@ const edit = async (req: NextApiRequest, res: NextApiResponse) => {
 			{ new: true }
 		);
 	} else {
-		newNote = await note.findByIdAndDelete(id);
+		await note.findByIdAndDelete(id);
+		newNote = await note.find({ status: status });
 	}
 	return res.json(newNote);
 };
