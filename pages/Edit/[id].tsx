@@ -18,6 +18,11 @@ const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 	const { id } = router.query;
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		let x = "";
+		if (status == "Urgent and Important") x = "UI";
+		else if (status == "Urgent but not Important") x = "UNI";
+		else if (status == "not Urgent but Important") x = "NUI";
+		else if (status == "neither Urgent nor Important") x = "NUNI";
 		fetch(`/api/edit/${id}`, {
 			method: "PUT",
 			headers: {
@@ -26,7 +31,7 @@ const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 			body: JSON.stringify({
 				title,
 				body,
-				status,
+				status: x,
 			}),
 		})
 			.then((res) => {
@@ -74,7 +79,7 @@ const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 							<a
 								className="dropdown-item"
 								href="#"
-								onClick={() => setStatus("UI")}
+								onClick={() => setStatus("Urgent and Important")}
 							>
 								Urgent and Important
 							</a>
@@ -83,7 +88,7 @@ const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 							<a
 								className="dropdown-item"
 								href="#"
-								onClick={() => setStatus("UNI")}
+								onClick={() => setStatus("Urgent but not Important")}
 							>
 								Urgent but not Important
 							</a>
@@ -92,7 +97,7 @@ const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 							<a
 								className="dropdown-item"
 								href="#"
-								onClick={() => setStatus("NUI")}
+								onClick={() => setStatus("not Urgent but Important")}
 							>
 								not Urgent but Important
 							</a>
@@ -101,7 +106,7 @@ const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 							<a
 								className="dropdown-item"
 								href="#"
-								onClick={() => setStatus("NUNI")}
+								onClick={() => setStatus("neither Urgent nor Important")}
 							>
 								neither Urgent nor Important
 							</a>
