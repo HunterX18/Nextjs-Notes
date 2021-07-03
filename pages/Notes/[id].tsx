@@ -1,8 +1,9 @@
 const note = require("../../components/models/notes");
 import connect from "../../components/db";
-import { GetStaticPaths, GetStaticProps, NextPageContext } from "next";
+import { GetServerSideProps } from "next";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import redisClient from "../../components/redisClient";
 
 interface Inotes {
 	_id: string;
@@ -70,10 +71,20 @@ const Notes = ({ notes, status }: IPageProps) => {
 	);
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	connect();
-	const notes = await note.find();
-	const jsonNotes = JSON.parse(JSON.stringify(notes));
+	const notes = await redisClient.get("notes");
+	// console.log(notes);
+	let jsonNotes;
+	if (notes != null) {
+		jsonNotes = JSON.parse(notes);
+		console.log("cache hit");
+	} else {
+		console.log("cache miss");
+		const Notes = await note.find();
+		await redisClient.set("notes", JSON.stringify(Notes));
+		jsonNotes = JSON.parse(JSON.stringify(Notes));
+	}
 	let status = "";
 	if (ctx.params?.id == "1") status = "UI";
 	if (ctx.params?.id == "2") status = "UNI";
@@ -87,13 +98,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 			notes: newNotes,
 			status,
 		},
-	};
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-	return {
-		paths: [],
-		fallback: true,
 	};
 };
 

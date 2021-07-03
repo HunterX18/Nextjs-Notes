@@ -1,9 +1,9 @@
 import connect from "../components/db";
 const note = require("../components/models/notes");
 import Link from "next/link";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Create from "../components/Create";
-import { useRouter } from "next/router";
+import redisClient from "../components/redisClient";
 
 interface Inotes {
 	_id: string;
@@ -22,21 +22,13 @@ interface IPageProps {
 }
 
 export default function Home({ notes, UI, NUI, UNI, NUNI }: IPageProps) {
-	const router = useRouter();
-	const handleDelete = (id: string) => {
-		fetch(`/api/edit/${id}`, {
-			method: "DELETE",
-		})
-			.then((res) => router.push("/"))
-			.catch((err) => console.log(err));
-	};
 	return (
 		<div className="container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center">
 			<Create />
 			<div className="container-l ">
 				<div className="row">
 					<Link href="/Notes/1">
-						<div className="col m-2 border border-primary p-5 shadow-lg">
+						<div className="col m-2 border p-5 shadow-lg">
 							<h4 className="text-danger">Urgent and Important</h4>
 							<a href="#" className="pe-auto text-decoration-none text-info">
 								<h5>{UI} tasks pending</h5>
@@ -44,7 +36,7 @@ export default function Home({ notes, UI, NUI, UNI, NUNI }: IPageProps) {
 						</div>
 					</Link>
 					<Link href="/Notes/2">
-						<div className="col m-2 border border-primary p-5 shadow-lg">
+						<div className="col m-2 border p-5 shadow-lg">
 							<h4 className="text-warning">Urgent but NOT Important</h4>
 							<a href="#" className="pe-auto text-decoration-none text-info">
 								<h5>{UNI} tasks pending</h5>
@@ -54,7 +46,7 @@ export default function Home({ notes, UI, NUI, UNI, NUNI }: IPageProps) {
 				</div>
 				<div className="row">
 					<Link href="/Notes/3">
-						<div className="col m-2 border border-primary p-5 shadow-lg">
+						<div className="col m-2 border p-5 shadow-lg">
 							<h4 className="text-primary">Important but NOT Urgent</h4>
 							<a href="#" className="pe-auto text-decoration-none text-info">
 								<h5>{NUI} tasks pending</h5>
@@ -62,7 +54,7 @@ export default function Home({ notes, UI, NUI, UNI, NUNI }: IPageProps) {
 						</div>
 					</Link>
 					<Link href="/Notes/4">
-						<div className="col m-2 border border-primary p-5 shadow-lg">
+						<div className="col m-2 border p-5 shadow-lg">
 							<h4 className="text-success">Neither Important Nor Urgent</h4>
 							<a href="#" className="pe-auto text-decoration-none text-info">
 								<h5>{NUNI} tasks pending</h5>
@@ -75,11 +67,20 @@ export default function Home({ notes, UI, NUI, UNI, NUNI }: IPageProps) {
 	);
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
 	connect();
-	const notes = await note.find();
-	const jsonNotes = JSON.parse(JSON.stringify(notes));
-	// console.log(jsonNotes);
+	let jsonNotes: any = [];
+	const notes = await redisClient.get("notes");
+	if (notes != null) {
+		jsonNotes = JSON.parse(notes);
+		console.log("cache hit");
+	} else {
+		const Notes = await note.find();
+		await redisClient.set("notes", JSON.stringify(Notes));
+		console.log("cache miss");
+		jsonNotes = JSON.parse(JSON.stringify(Notes));
+	}
+
 	let UI = 0,
 		UNI = 0,
 		NUI = 0,
@@ -92,7 +93,7 @@ export const getStaticProps: GetStaticProps = async () => {
 	});
 	return {
 		props: {
-			notes: JSON.parse(JSON.stringify(notes)),
+			notes: jsonNotes,
 			UI,
 			UNI,
 			NUI,
