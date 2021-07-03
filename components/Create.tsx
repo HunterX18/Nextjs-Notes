@@ -4,10 +4,15 @@ import { useRouter } from "next/router";
 const Create = () => {
 	const [title, setTitle] = useState("");
 	const [body, setBody] = useState("");
-	const [status, setStatus] = useState("UI");
+	const [status, setStatus] = useState("Urgent and Important");
 	const router = useRouter();
 	const handleSubmit = (e: any) => {
 		e.preventDefault();
+		let x = "";
+		if (status == "Urgent and Important") x = "UI";
+		else if (status == "Urgent but not Important") x = "UNI";
+		else if (status == "not Urgent but Important") x = "NUI";
+		else if (status == "neither Urgent nor Important") x = "NUNI";
 		fetch("/api/create", {
 			method: "POST",
 			headers: {
@@ -16,14 +21,14 @@ const Create = () => {
 			body: JSON.stringify({
 				title,
 				body,
-				status,
+				status: x,
 			}),
 		})
 			.then((res) => res.json())
 			.then((result) => {
 				setTitle("");
 				setBody("");
-				setStatus("UI");
+				setStatus("Urgent and Important");
 				router.push("/");
 			})
 			.catch((err) => console.log(err));
@@ -64,7 +69,7 @@ const Create = () => {
 						<a
 							className="dropdown-item"
 							href="#"
-							onClick={() => setStatus("UI")}
+							onClick={() => setStatus("Urgent and Important")}
 						>
 							Urgent and Important
 						</a>
@@ -73,7 +78,7 @@ const Create = () => {
 						<a
 							className="dropdown-item"
 							href="#"
-							onClick={() => setStatus("UNI")}
+							onClick={() => setStatus("Urgent but not Important")}
 						>
 							Urgent but not Important
 						</a>
@@ -82,7 +87,7 @@ const Create = () => {
 						<a
 							className="dropdown-item"
 							href="#"
-							onClick={() => setStatus("NUI")}
+							onClick={() => setStatus("not Urgent but Important")}
 						>
 							not Urgent but Important
 						</a>
@@ -91,7 +96,7 @@ const Create = () => {
 						<a
 							className="dropdown-item"
 							href="#"
-							onClick={() => setStatus("NUNI")}
+							onClick={() => setStatus("neither Urgent nor Important")}
 						>
 							neither Urgent nor Important
 						</a>
