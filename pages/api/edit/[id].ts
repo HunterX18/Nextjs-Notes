@@ -7,6 +7,7 @@ connect();
 
 const edit = async (req: NextApiRequest, res: NextApiResponse) => {
 	await redisClient.flushall();
+	// console.log("here");
 	const { title, body, status } = req.body;
 	const id = req.query.id;
 	let newNote;

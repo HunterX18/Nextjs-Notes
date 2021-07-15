@@ -74,13 +74,10 @@ const Notes = ({ notes, status }: IPageProps) => {
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 	connect();
 	const notes = await redisClient.get("notes");
-	// console.log(notes);
 	let jsonNotes;
 	if (notes != null) {
 		jsonNotes = JSON.parse(notes);
-		console.log("cache hit");
 	} else {
-		console.log("cache miss");
 		const Notes = await note.find();
 		await redisClient.set("notes", JSON.stringify(Notes));
 		jsonNotes = JSON.parse(JSON.stringify(Notes));

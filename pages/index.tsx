@@ -21,7 +21,7 @@ interface IPageProps {
 	NUNI: Number;
 }
 
-export default function Home({ notes, UI, NUI, UNI, NUNI }: IPageProps) {
+export default function Home({ UI, NUI, UNI, NUNI }: IPageProps) {
 	return (
 		<div className="container-fluid min-vh-100 d-flex flex-column justify-content-center align-items-center">
 			<Create />
@@ -73,14 +73,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
 	const notes = await redisClient.get("notes");
 	if (notes != null) {
 		jsonNotes = JSON.parse(notes);
-		console.log("cache hit");
 	} else {
 		const Notes = await note.find();
 		await redisClient.set("notes", JSON.stringify(Notes));
-		console.log("cache miss");
 		jsonNotes = JSON.parse(JSON.stringify(Notes));
 	}
-
 	let UI = 0,
 		UNI = 0,
 		NUI = 0,

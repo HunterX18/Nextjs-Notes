@@ -13,7 +13,12 @@ interface IPageProps {
 const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 	const [title, setTitle] = useState(Otitle);
 	const [body, setBody] = useState(Obody);
-	const [status, setStatus] = useState(Ostatus);
+	let Ogstatus = "";
+	if (Ostatus == "UI") Ogstatus = "Urgent and Important";
+	if (Ostatus == "UNI") Ogstatus = "Urgent but not Important";
+	if (Ostatus == "NUI") Ogstatus = "not Urgent but Important";
+	if (Ostatus == "NUNI") Ogstatus = "neither Urgent nor Important";
+	const [status, setStatus] = useState(Ogstatus);
 	const router = useRouter();
 	const { id } = router.query;
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -118,27 +123,6 @@ const Edit = ({ Otitle, Obody, Ostatus }: IPageProps) => {
 					</button>
 				</form>
 			</div>
-			{/* <form onSubmit={handleSubmit}>
-				<input
-					type="text"
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
-					placeholder="title"
-				/>
-				<input
-					type="text"
-					value={body}
-					onChange={(e) => setBody(e.target.value)}
-					placeholder="description"
-				/>
-				<input
-					type="text"
-					value={status}
-					onChange={(e) => setStatus(e.target.value)}
-					placeholder="status"
-				/>
-				<input type="submit" value="submit" />
-			</form> */}
 		</>
 	);
 };
@@ -149,7 +133,6 @@ export const getServerSideProps: GetServerSideProps = async (
 	connect();
 	const id = ctx.params?.id;
 	const Note = await note.findById(id);
-	console.log(Note);
 	return {
 		props: {
 			Otitle: Note.title,
