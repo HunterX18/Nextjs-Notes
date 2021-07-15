@@ -1,4 +1,3 @@
-const asyncRedis = require("async-redis");
-const redisClient = asyncRedis.createClient();
-
+const Redis = require("ioredis");
+let redisClient = new Redis(process.env.REDIS_URI);
 export default redisClient;
